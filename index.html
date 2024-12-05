@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Главная - Кафе</title>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">CafeSystem</a>
+        <nav>
+            <a href="/menu" class="nav-item">Меню</a>
+            <a href="/order" class="nav-item">Сделать заказ</a>
+            <a href="/models" class="nav-item">Модели базы данных</a>
+        </nav>
+    </header>
+
+    <div class="welcome">
+        <h1>Добро пожаловать в наше кафе!</h1>
+        <p>Мы рады приветствовать вас в нашем уютном кафе, где каждое блюдо готовится с любовью и заботой о наших гостях. Наши повара используют только свежие ингредиенты и следуют лучшим кулинарным традициям.</p>
+    </div>
+
+    <section class="features-section">
+        <h2 class="features-title">Почему выбирают нас</h2>
+
+        <div class="features-container">
+            <div class="feature-card">
+                <h3>Отличный сервис</h3>
+                <p>Наши официанты - профессионалы своего дела, которые сделают ваше посещение максимально комфортным.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Разнообразное меню</h3>
+                <p>От классических блюд до авторских рецептов - каждый найдет что-то по вкусу.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Уютная атмосфера</h3>
+                <p>Идеальное место для встреч с друзьями, деловых обедов или романтического ужина.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Быстрое обслуживание</h3>
+                <p>Мы ценим ваше время и стараемся обслужить каждого гостя максимально быстро.</p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Модели базы данных кафе</title>
+    <style>
+        .model-container { margin: 20px; }
+        .diagram-title { text-align: center; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">CafeSystem</a>
+        <nav>
+            <a href="/menu" class="nav-item">Меню</a>
+            <a href="/order" class="nav-item">Сделать заказ</a>
+            <a href="/models" class="nav-item">Модели базы данных</a>
+        </nav>
+    </header>
+
+    <div class="model-container">
+        <h2 class="diagram-title">Концептуальная модель базы данных кафе</h2>
+        <div class="mermaid">
+            erDiagram
+                GUEST ||--o{ ORDER : places
+                WAITER ||--o{ ORDER : serves
+                ORDER ||--|{ ORDER_ITEM : contains
+                MENU_ITEM ||--o{ ORDER_ITEM : includes
+                MENU_CATEGORY ||--o{ MENU_ITEM : has
+                ORDER ||--o| PAYMENT : has
+
+                GUEST {
+                    int id PK
+                    string name
+                    string phone
+                    string email
+                }
+
+                WAITER {
+                    int id PK
+                    string name
+                    string phone
+                    int experience
+                }
+
+                MENU_CATEGORY {
+                    int id PK
+                    string name
+                }
+
+                MENU_ITEM {
+                    int id PK
+                    string name
+                    string description
+                    decimal price
+                    int category_id FK
+                }
+
+                ORDER {
+                    int id PK
+                    int guest_id FK
+                    int waiter_id FK
+                    int table_number
+                    string status
+                    datetime order_date
+                    decimal total_amount
+                }
+
+                ORDER_ITEM {
+                    int id PK
+                    int order_id FK
+                    int menu_item_id FK
+                    int quantity
+                    decimal price
+                }
+
+                PAYMENT {
+                    int id PK
+                    int order_id FK
+                    decimal amount
+                    string method
+                    datetime date
+                }
+        </div>
+
+        <h2 class="diagram-title">Логическая схема базы данных</h2>
+        <div class="mermaid">
+            graph TD
+                subgraph Основные сущности
+                    G[Гость] --> O[Заказ]
+                    W[Официант] --> O
+                    O --> P[Платеж]
+                end
+                
+                subgraph Меню и заказы
+                    MC[Категория меню] --> MI[Позиция меню]
+                    MI --> OI[Позиция заказа]
+                    O --> OI
+                end
+
+                style G fill:#f9f,stroke:#333
+                style W fill:#bbf,stroke:#333
+                style O fill:#dfd,stroke:#333
+                style P fill:#fdd,stroke:#333
+                style MC fill:#dff,stroke:#333
+                style MI fill:#ffd,stroke:#333
+                style OI fill:#ddf,stroke:#333
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

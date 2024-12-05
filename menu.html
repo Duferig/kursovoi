@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Меню кафе</title>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">CafeSystem</a>
+        <nav>
+            <a href="/menu" class="nav-item">Меню</a>
+            <a href="/order" class="nav-item">Сделать заказ</a>
+            <a href="/models" class="nav-item">Модели базы данных</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title">Наше меню</h1>
+
+        {% for category, items in menu.items() %}
+            <section class="menu-section">
+                <h2 class="category-title">{{ category }}</h2>
+                <div class="menu-grid">
+                    {% for item in items %}
+                        <div class="menu-item">
+                            <div class="item-details">
+                                <h3 class="item-name">{{ item['item_name'] }}</h3>
+                                <p>{{ item['description'] }}</p>
+                                <p><strong>Цена:</strong> {{ "%.2f"|format(item['price']) }} ₽</p>
+                                <p><strong>Время приготовления:</strong> {{ item['preparation_time'] }} мин.</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Заказы</title>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">CafeSystem</a>
+        <nav>
+            <a href="/menu" class="nav-item">Меню</a>
+            <a href="/order" class="nav-item">Сделать заказ</a>
+            <a href="/models" class="nav-item">Модели базы данных</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <form method="POST" class="order-form">
+            <h2>Создать заказ</h2>
+
+            <div class="form-group">
+                <label>Имя гостя:</label>
+                <input type="text" name="guest_name" required class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Номер столика:</label>
+                <input type="number" name="table_number" required class="form-control" min="1">
+            </div>
+
+            <div class="form-group">
+                <label>Официант:</label>
+                <select name="waiter" required class="form-control">
+                    {% for waiter in waiters %}
+                        <option value="{{ waiter['id'] }}">{{ waiter['name'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Выберите блюда:</label>
+                <div class="menu-items">
+                    {% for item in menu_items %}
+                        <div class="menu-item">
+                            <label>
+                                {{ item['name'] }} - {{ item['price'] }} ₽
+                                <input type="number" name="quantities" value="0" min="0" class="form-control">
+                                <input type="hidden" name="menu_items" value="{{ item['id'] }}">
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Оформить заказ</button>
+        </form>
+
+        <div class="orders-list">
+            <h2>Активные заказы</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Номер заказа</th>
+                        <th>Гость</th>
+                        <th>Столик</th>
+                        <th>Официант</th>
+                        <th>Статус</th>
+                        <th>Сумма</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in active_orders %}
+                        <tr>
+                            <td>{{ order['id'] }}</td>
+                            <td>{{ order['guest_name'] }}</td>
+                            <td>{{ order['table_number'] }}</td>
+                            <td>{{ order['waiter_name'] }}</td>
+                            <td>
+                                <span class="status-badge status-{{ order['status'] }}">
+                                    {{ order['status'] }}
+                                </span>
+                            </td>
+                            <td>{{ "%.2f"|format(order['total_amount']) }} ₽</td>
+                            <td class="actions-cell">
+                                {% if order['status'] == 'новый' %}
+                                    <form action="{{ url_for('update_order_status', order_id=order['id']) }}" method="POST" class="action-form">
+                                        <input type="hidden" name="status" value="готовится">
+                                        <button type="submit" class="btn btn-primary">Принять в работу</button>
+                                    </form>
+                                {% elif order['status'] == 'готовится' %}
+                                    <form action="{{ url_for('update_order_status', order_id=order['id']) }}" method="POST" class="action-form">
+                                        <input type="hidden" name="status" value="готов">
+                                        <button type="submit" class="btn btn-success">Заказ готов</button>
+                                    </form>
+                                {% elif order['status'] == 'готов' %}
+                                    <form action="{{ url_for('payment', order_id=order['id']) }}" method="POST" class="payment-form">
+                                        <select name="payment_method" required class="form-control">
+                                            <option value="наличные">Наличные</option>
+                                            <option value="карта">Банковская карта</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-warning">Оплатить</button>
+                                    </form>
+                                {% endif %}
+                                
+                                <form action="{{ url_for('cancel_order', order_id=order['id']) }}" method="POST" class="action-form">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите отменить заказ?')">
+                                        Отменить
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
